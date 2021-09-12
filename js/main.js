@@ -79,7 +79,7 @@ async function processLocation(location) {
         }
       }
     }
-    if (isGoingToRain == true) {
+    if (isGoingToRain() == true) {
       console.log(prediction.current_weather.weathercode);
       showPositive({
         location: 'Test',
