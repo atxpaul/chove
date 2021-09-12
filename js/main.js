@@ -69,15 +69,14 @@ async function processLocation(location) {
     const index = prediction.hourly.time.indexOf(dformat);
 
     function isGoingToRain() {
-      for (let i = index; i < index + 8; i++) {
-        console.log(prediction.hourly.precipitation[i]);
+      let maxTimeToCheckRain = index + 8;
+      for (let i = index; i < maxTimeToCheckRain; i++) {
         if (prediction.hourly.precipitation[i] > 0) {
           nextRain = i;
           return true;
-        } else {
-          return false;
         }
       }
+      return false;
     }
     if (isGoingToRain() == true) {
       console.log(prediction.current_weather.weathercode);
