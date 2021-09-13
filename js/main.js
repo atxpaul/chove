@@ -32,7 +32,7 @@ function showPositive(info) {
   showPanel(positive);
   positive.querySelector('p').innerHTML = `Agora mesmo hai ${
     info.currentTemp
-  }°C na túa localización' con ${
+  }°C na túa localización con ${
     info.currentWeather
   } e parece que choverá <strong>dentro de ${info.nextRain} ${
     info.nextRain === 1 ? 'hora' : 'horas'
@@ -57,7 +57,7 @@ async function processLocation(location) {
   }
 
   try {
-    let nextRain;
+    let nextRain = 0;
     const prediction = await getData(
       `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation,weathercode&current_weather=true`
     );
@@ -71,8 +71,8 @@ async function processLocation(location) {
     function isGoingToRain() {
       let maxTimeToCheckRain = index + 8;
       for (let i = index; i < maxTimeToCheckRain; i++) {
+        nextRain++;
         if (prediction.hourly.precipitation[i] > 0) {
-          nextRain = i;
           return true;
         }
       }
