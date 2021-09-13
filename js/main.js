@@ -32,11 +32,22 @@ function showPositive(info) {
   showPanel(positive);
   positive.querySelector('p').innerHTML = `Agora mesmo hai ${
     info.currentTemp
-  }°C na túa localización con ${
-    info.currentWeather
-  } e parece que choverá <strong>dentro de ${info.nextRain} ${
+  }°C na túa localización con ${info.currentWeather} 
+  ${info.isRaining}
+  e parece que choverá dentro de ${info.nextRain} ${
     info.nextRain === 1 ? 'hora' : 'horas'
-  }</strong>`;
+  }`;
+}
+
+function showPositiveRaining(info) {
+  hideAllPanels();
+  showPanel(positive);
+  positive.querySelector('p').innerHTML = `Agora mesmo hai ${
+    info.currentTemp
+  }°C na túa localización con ${info.currentWeather} 
+  e parece que vai chover ata dentro de ${info.stopRaining} ${
+    info.stopRaining === 1 ? 'hora' : 'horas'
+  } polo menos`;
 }
 
 function showNegative(info) {
@@ -58,6 +69,7 @@ async function processLocation(location) {
 
   try {
     let nextRain = 0;
+    let stopRaining = 0;
     const prediction = await getData(
       `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation,weathercode&current_weather=true`
     );
@@ -67,19 +79,45 @@ async function processLocation(location) {
       date.getMonth() + 1
     ).padLeft()}-${date.getDate().padLeft()}T${date.getHours().padLeft()}:00`;
     const index = prediction.hourly.time.indexOf(dformat);
+    console.log(prediction.hourly.precipitation.slice(index));
+
+    function isRaining() {
+      let maxTimeToCheckRain = index + 8;
+      for (let i = index; i < maxTimeToCheckRain; i++) {
+        if (prediction.hourly.precipitation[i] > 0) {
+          stopRaining++;
+          console.log(stopRaining);
+        }
+      }
+      console.log(stopRaining);
+      if (stopRaining > 0) {
+        return true;
+      }
+      return false;
+    }
 
     function isGoingToRain() {
       let maxTimeToCheckRain = index + 8;
       for (let i = index; i < maxTimeToCheckRain; i++) {
         nextRain++;
+        console.log(nextRain);
         if (prediction.hourly.precipitation[i] > 0) {
           return true;
         }
       }
       return false;
     }
-    if (isGoingToRain() == true) {
-      console.log(prediction.current_weather.weathercode);
+    if (isRaining() == true) {
+      console.log('Chove' + stopRaining);
+      showPositiveRaining({
+        location: 'Test',
+        currentTemp: prediction.hourly.temperature_2m[index],
+        currentWeather:
+          weatherCodes[parseInt(prediction.current_weather.weathercode)],
+        stopRaining: stopRaining + 1,
+      });
+    } else if (isGoingToRain() == true) {
+      console.log('Vai chover');
       showPositive({
         location: 'Test',
         currentTemp: prediction.hourly.temperature_2m[index],
