@@ -2,6 +2,7 @@ const permission = document.querySelector('.permission');
 const positive = document.querySelector('.positive');
 const negative = document.querySelector('.negative');
 const error = document.querySelector('.error');
+const image = document.querySelector('#image');
 
 function hideAllPanels() {
   permission.classList.add('hidden');
@@ -30,6 +31,7 @@ function showError(message) {
 function showPositive(info) {
   hideAllPanels();
   showPanel(positive);
+  image.src = '../img/rain.svg';
   positive.querySelector('p').innerHTML = `Agora mesmo hai ${
     info.currentTemp
   }°C na túa localización con ${info.currentWeather} 
@@ -42,6 +44,7 @@ function showPositive(info) {
 function showPositiveRaining(info) {
   hideAllPanels();
   showPanel(positive);
+  image.src = '../img/rain.svg';
   positive.querySelector('p').innerHTML = `Agora mesmo hai ${
     info.currentTemp
   }°C na túa localización con ${info.currentWeather} 
@@ -53,6 +56,7 @@ function showPositiveRaining(info) {
 function showNegative(info) {
   hideAllPanels();
   showPanel(negative);
+  image.src = '../img/sun.svg';
   negative.querySelector(
     'p'
   ).innerHTML = `Agora mesmo hai ${info.currentTemp}°C na túa localización con ${info.currentWeather} e non parece que vaia a chover nas próximas horas`;
@@ -79,7 +83,6 @@ async function processLocation(location) {
       date.getMonth() + 1
     ).padLeft()}-${date.getDate().padLeft()}T${date.getHours().padLeft()}:00`;
     const index = prediction.hourly.time.indexOf(dformat);
-    console.log(prediction.hourly.precipitation.slice(index));
 
     function isRaining() {
       let maxTimeToCheckRain = index + 8;
