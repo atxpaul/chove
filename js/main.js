@@ -32,6 +32,7 @@ function showPositive(info) {
   hideAllPanels();
   showPanel(positive);
   image.src = '../img/rain.svg';
+  image.alt = 'icono choiva';
   positive.querySelector('p').innerHTML = `Agora mesmo hai ${
     info.currentTemp
   }°C na túa localización con ${info.currentWeather} 
@@ -45,6 +46,7 @@ function showPositiveRaining(info) {
   hideAllPanels();
   showPanel(positive);
   image.src = '../img/rain.svg';
+  image.alt = 'icono choiva';
   positive.querySelector('p').innerHTML = `Agora mesmo hai ${
     info.currentTemp
   }°C na túa localización con ${info.currentWeather} 
@@ -57,6 +59,7 @@ function showNegative(info) {
   hideAllPanels();
   showPanel(negative);
   image.src = '../img/sun.svg';
+  image.alt = 'icono sol';
   negative.querySelector(
     'p'
   ).innerHTML = `Agora mesmo hai ${info.currentTemp}°C na túa localización con ${info.currentWeather} e non parece que vaia a chover nas próximas horas`;
