@@ -88,29 +88,41 @@ async function processLocation(location) {
     const index = prediction.hourly.time.indexOf(dformat);
 
     function isRaining() {
+      console.log('Comprobando se está chovendo');
       let maxTimeToCheckRain = index + 8;
       for (let i = index; i < maxTimeToCheckRain; i++) {
         if (prediction.hourly.precipitation[i] > 0) {
           stopRaining++;
-          console.log(stopRaining);
+          //console.log(stopRaining);
         }
       }
-      console.log(stopRaining);
+      //console.log(stopRaining);
       if (stopRaining > 0) {
+        console.log(
+          `Seica si, agora o indice de choiva da próxima hora é de ${
+            prediction.hourly.precipitation[index + 1]
+          }`
+        );
         return true;
       }
+      console.log(`Seica non`);
       return false;
     }
 
     function isGoingToRain() {
+      console.log('Comprobando se vai chover');
       let maxTimeToCheckRain = index + 8;
       for (let i = index; i < maxTimeToCheckRain; i++) {
         nextRain++;
-        console.log(nextRain);
+        //console.log(nextRain);
         if (prediction.hourly.precipitation[i] > 0) {
+          console.log(
+            `Seica si, en ${i} horas o indice de choiva da próxima hora é de ${prediction.hourly.precipitation[i]}`
+          );
           return true;
         }
       }
+      console.log(`Seica non`);
       return false;
     }
     if (isRaining() == true) {
@@ -132,6 +144,7 @@ async function processLocation(location) {
         nextRain: nextRain + 1,
       });
     } else {
+      console.log('Debe de facer un sol do carallo');
       showNegative({
         location: 'Test',
         currentTemp: prediction.hourly.temperature_2m[index],
