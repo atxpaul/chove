@@ -93,7 +93,9 @@ async function processLocation(location) {
       for (let i = index; i < maxTimeToCheckRain; i++) {
         if (prediction.hourly.precipitation[i] > 0) {
           stopRaining++;
-          //console.log(stopRaining);
+          console.log(
+            `O índice ás ${i} horas é de ${prediction.hourly.precipitation[i]}`
+          );
         }
       }
       //console.log(stopRaining);
@@ -114,7 +116,9 @@ async function processLocation(location) {
       let maxTimeToCheckRain = index + 8;
       for (let i = index; i < maxTimeToCheckRain; i++) {
         nextRain++;
-        //console.log(nextRain);
+        console.log(
+          `O índice ás ${i} horas é de ${prediction.hourly.precipitation[i]}`
+        );
         if (prediction.hourly.precipitation[i] > 0) {
           console.log(
             `Seica si, en ${i} horas o indice de choiva da próxima hora é de ${prediction.hourly.precipitation[i]}`
