@@ -4,6 +4,10 @@ const negative = document.querySelector('.negative');
 const error = document.querySelector('.error');
 const image = document.querySelector('#image');
 
+let icon;
+let alt;
+let weather;
+
 function hideAllPanels() {
   permission.classList.add('hidden');
   positive.classList.add('hidden');
@@ -31,13 +35,13 @@ function showError(message) {
 function showPositive(info) {
   hideAllPanels();
   showPanel(positive);
-  image.src = '../img/rain.svg';
-  image.alt = 'icono choiva';
+  image.src = info.currentWeather.icon;
+  image.alt = info.currentWeather.alt;
   positive.querySelector('p').innerHTML = `Agora mesmo hai ${
     info.currentTemp
-  }°C na túa localización con ${info.currentWeather} 
+  }°C na túa localización con ${info.textWeather} 
   ${info.isRaining}
-  e parece que choverá dentro de ${info.nextRain} ${
+  e parece que pode chover dentro de ${info.nextRain} ${
     info.nextRain === 1 ? 'hora' : 'horas'
   }`;
 }
@@ -45,12 +49,12 @@ function showPositive(info) {
 function showPositiveRaining(info) {
   hideAllPanels();
   showPanel(positive);
-  image.src = '../img/rain.svg';
-  image.alt = 'icono choiva';
+  image.src = info.currentWeather.icon;
+  image.alt = info.currentWeather.alt;
   positive.querySelector('p').innerHTML = `Agora mesmo hai ${
     info.currentTemp
-  }°C na túa localización con ${info.currentWeather} 
-  e parece que vai chover ata dentro de ${info.stopRaining} ${
+  }°C na túa localización con ${info.textWeather} 
+  e parece que pode chover ata dentro de ${info.stopRaining} ${
     info.stopRaining === 1 ? 'hora' : 'horas'
   } polo menos`;
 }
@@ -58,11 +62,67 @@ function showPositiveRaining(info) {
 function showNegative(info) {
   hideAllPanels();
   showPanel(negative);
-  image.src = '../img/sun.svg';
-  image.alt = 'icono sol';
+  image.src = info.currentWeather.icon;
+  image.alt = info.currentWeather.alt;
   negative.querySelector(
     'p'
-  ).innerHTML = `Agora mesmo hai ${info.currentTemp}°C na túa localización con ${info.currentWeather} e non parece que vaia a chover nas próximas horas`;
+  ).innerHTML = `Agora mesmo hai ${info.currentTemp}°C na túa localización con ${info.textWeather}  e non parece que vaia a chover nas próximas horas`;
+}
+
+function processCurrentWeather(weatherCode) {
+  console.log(`Processing code ${weatherCode}`);
+  if (weatherCode == 0) {
+    icon = '../img/sun.svg';
+    alt = 'icono sol';
+    weather = 'sun';
+  } else if (weatherCode == 21 || weatherCode == 2 || weatherCode == 3) {
+    icon = '../img/sunclouds.svg';
+    alt = 'icono sol e nube';
+    weather = 'sunandclouds';
+  } else if (
+    weatherCode == 51 ||
+    weatherCode == 53 ||
+    weatherCode == 55 ||
+    weatherCode == 56 ||
+    weatherCode == 57 ||
+    weatherCode == 61 ||
+    weatherCode == 63 ||
+    weatherCode == 65 ||
+    weatherCode == 66 ||
+    weatherCode == 67 ||
+    weatherCode == 80 ||
+    weatherCode == 81 ||
+    weatherCode == 82 ||
+    weatherCode == 85 ||
+    weatherCode == 86
+  ) {
+    icon = '../img/rain.svg';
+    alt = 'icono choiva';
+    weather = 'rain';
+  } else if (weatherCode == 45 || weatherCode == 48) {
+    icon = '../img/fog.svg';
+    alt = 'icono neboa';
+    weather = 'fog';
+  } else if (
+    weatherCode == 71 ||
+    weatherCode == 75 ||
+    weatherCode == 73 ||
+    weatherCode == 77
+  ) {
+    icon = '../img/snow.svg';
+    alt = 'icono neve ou saraiba';
+    weather = 'snow';
+  } else if (weatherCode == 95 || weatherCode == 96 || weatherCode == 99) {
+    icon = '../img/storm.svg';
+    alt = 'icono treboada';
+    weather = 'storm';
+  }
+  let image = {
+    icon: icon,
+    alt: alt,
+    weather: weather,
+  };
+  return image;
 }
 
 async function processLocation(location) {
@@ -87,18 +147,65 @@ async function processLocation(location) {
     ).padLeft()}-${date.getDate().padLeft()}T${date.getHours().padLeft()}:00`;
     const index = prediction.hourly.time.indexOf(dformat);
 
+    function getCurrentWeather() {
+      return prediction.current_weather.weathercode;
+    }
+
+    function processData() {
+      let currentWeather = processCurrentWeather(getCurrentWeather());
+      //console.log(currentWeather);
+      if (
+        currentWeather.weather == 'rain' ||
+        currentWeather.weather == 'storm' ||
+        currentWeather.weather == 'snow'
+      ) {
+        isRaining();
+        showPositiveRaining({
+          location: 'Test',
+          currentTemp: prediction.hourly.temperature_2m[index],
+          currentWeather: currentWeather,
+          stopRaining: stopRaining + 1,
+          textWeather:
+            weatherCodes[parseInt(prediction.current_weather.weathercode)],
+        });
+      } else if (
+        currentWeather.weather == 'sun' ||
+        currentWeather.weather == 'sunandclouds' ||
+        currentWeather.weather == 'fog'
+      ) {
+        if (isGoingToRain() == true) {
+          showPositive({
+            location: 'Test',
+            currentTemp: prediction.hourly.temperature_2m[index],
+            currentWeather: currentWeather,
+            nextRain: nextRain + 1,
+            textWeather:
+              weatherCodes[parseInt(prediction.current_weather.weathercode)],
+          });
+        } else {
+          showNegative({
+            location: 'Test',
+            currentTemp: prediction.hourly.temperature_2m[index],
+            currentWeather: currentWeather,
+            textWeather:
+              weatherCodes[parseInt(prediction.current_weather.weathercode)],
+          });
+        }
+      }
+    }
+
     function isRaining() {
       console.log('Comprobando se está chovendo');
       let maxTimeToCheckRain = index + 8;
       for (let i = index; i < maxTimeToCheckRain; i++) {
-        if (prediction.hourly.precipitation[i] > 0) {
+        if (prediction.hourly.precipitation[i] > 0.3) {
           stopRaining++;
           console.log(
             `O índice ás ${i} horas é de ${prediction.hourly.precipitation[i]}`
           );
         }
       }
-      //console.log(stopRaining);
+
       if (stopRaining > 0) {
         console.log(
           `Seica si, agora o indice de choiva da próxima hora é de ${
@@ -119,7 +226,7 @@ async function processLocation(location) {
         console.log(
           `O índice ás ${i} horas é de ${prediction.hourly.precipitation[i]}`
         );
-        if (prediction.hourly.precipitation[i] > 0) {
+        if (prediction.hourly.precipitation[i] > 0.3) {
           console.log(
             `Seica si, en ${i} horas o indice de choiva da próxima hora é de ${prediction.hourly.precipitation[i]}`
           );
@@ -129,33 +236,8 @@ async function processLocation(location) {
       console.log(`Seica non`);
       return false;
     }
-    if (isRaining() == true) {
-      console.log('Chove' + stopRaining);
-      showPositiveRaining({
-        location: 'Test',
-        currentTemp: prediction.hourly.temperature_2m[index],
-        currentWeather:
-          weatherCodes[parseInt(prediction.current_weather.weathercode)],
-        stopRaining: stopRaining + 1,
-      });
-    } else if (isGoingToRain() == true) {
-      console.log('Vai chover');
-      showPositive({
-        location: 'Test',
-        currentTemp: prediction.hourly.temperature_2m[index],
-        currentWeather:
-          weatherCodes[parseInt(prediction.current_weather.weathercode)],
-        nextRain: nextRain + 1,
-      });
-    } else {
-      console.log('Debe de facer un sol do carallo');
-      showNegative({
-        location: 'Test',
-        currentTemp: prediction.hourly.temperature_2m[index],
-        currentWeather:
-          weatherCodes[parseInt(prediction.current_weather.weathercode)],
-      });
-    }
+
+    processData();
   } catch (error) {
     console.log(error);
     showError('Erro conseguindo información meteorolóxica');
