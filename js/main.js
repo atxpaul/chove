@@ -153,7 +153,11 @@ async function processLocation(location) {
 
     function processData() {
       let currentWeather = processCurrentWeather(getCurrentWeather());
-      //console.log(currentWeather);
+      console.log(
+        `O tempo actual é ${
+          weatherCodes[parseInt(prediction.current_weather.weathercode)]
+        }`
+      );
       if (
         currentWeather.weather == 'rain' ||
         currentWeather.weather == 'storm' ||
