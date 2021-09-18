@@ -10,7 +10,7 @@ Polo de agora podes botarlle unha ollada nesta url: [Chove?](https://chove.netli
 
 ## API
 
-Esta web empresa a API de [open-meteo](https://open-meteo.com/en)
+Esta web emprega a API de [open-meteo](https://open-meteo.com/en)
 
 Esta API é completamente gratuita e sen límites de emprego, polo menos sen uso comercial.
 
