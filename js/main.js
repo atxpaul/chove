@@ -76,7 +76,7 @@ function processCurrentWeather(weatherCode) {
     alt = 'icono sol';
     weather = 'sun';
   } else if (weatherCode == 21 || weatherCode == 2 || weatherCode == 3) {
-    icon = '../img/sunclouds.svg';
+    icon = '../img/suncloud.svg';
     alt = 'icono sol e nube';
     weather = 'sunandclouds';
   } else if (
