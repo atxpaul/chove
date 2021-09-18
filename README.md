@@ -6,7 +6,7 @@ En Galego!
 
 ## Uso
 
-Polo de agora podes botarlle unha ollada nesta url: [Chove?](https://eloquent-lichterman-de6ecd.netlify.app/)
+Polo de agora podes botarlle unha ollada nesta url: [Chove?](https://chove.netlify.app/)
 
 ## API
 
