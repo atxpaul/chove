@@ -16,7 +16,7 @@ Esta API é completamente gratuita e sen límites de emprego, polo menos sen uso
 
 ## Orixe da idea
 
-Esta idea viu deste REPO: https://github.com/bertez/vaichover-demo
+Esta idea viu dun webinar onde se facía esta demo: https://github.com/bertez/vaichover-demo
 
 Pero con bastantes diferenzas no canto o emprego da API e no emprego dos datos.
 
