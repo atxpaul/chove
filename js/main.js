@@ -4,10 +4,6 @@ const negative = document.querySelector('.negative');
 const error = document.querySelector('.error');
 const image = document.querySelector('#image');
 
-let icon;
-let alt;
-let weather;
-
 function hideAllPanels() {
   permission.classList.add('hidden');
   positive.classList.add('hidden');
@@ -70,6 +66,9 @@ function showNegative(info) {
 }
 
 function processCurrentWeather(weatherCode) {
+  let icon;
+  let alt;
+  let weather;
   console.log(`Processing code ${weatherCode}`);
   if (weatherCode == 0) {
     icon = '../img/sun.svg';
