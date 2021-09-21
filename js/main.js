@@ -4,6 +4,8 @@ const negative = document.querySelector('.negative');
 const error = document.querySelector('.error');
 const image = document.querySelector('#image');
 
+const HOURSTOCHECK = 12;
+
 function hideAllPanels() {
   permission.classList.add('hidden');
   positive.classList.add('hidden');
@@ -199,7 +201,7 @@ async function processLocation(location) {
 
     function isRaining() {
       console.log('Comprobando se está chovendo');
-      let maxTimeToCheckRain = index + 8;
+      let maxTimeToCheckRain = index + HOURSTOCHECK;
       for (let i = index; i < maxTimeToCheckRain; i++) {
         if (prediction.hourly.precipitation[i] > 0.3) {
           stopRaining++;
@@ -223,7 +225,7 @@ async function processLocation(location) {
 
     function isGoingToRain() {
       console.log('Comprobando se vai chover');
-      let maxTimeToCheckRain = index + 8;
+      let maxTimeToCheckRain = index + HOURSTOCHECK;
       for (let i = index; i < maxTimeToCheckRain; i++) {
         nextRain++;
         console.log(
