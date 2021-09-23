@@ -38,7 +38,6 @@ function showPositive(info) {
   positive.querySelector('p').innerHTML = `Agora mesmo hai ${
     info.currentTemp
   }°C na túa localización con ${info.textWeather} 
-  ${info.isRaining}
   e parece que pode chover dentro de ${info.nextRain} ${
     info.nextRain === 1 ? 'hora' : 'horas'
   }`;
