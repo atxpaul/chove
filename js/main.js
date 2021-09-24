@@ -5,6 +5,7 @@ const error = document.querySelector('.error');
 const image = document.querySelector('#image');
 
 const HOURSTOCHECK = 12;
+const PERCENTAGETORAIN = 0.3;
 
 function hideAllPanels() {
   permission.classList.add('hidden');
@@ -168,7 +169,7 @@ async function processLocation(location) {
           location: 'Test',
           currentTemp: prediction.hourly.temperature_2m[index],
           currentWeather: currentWeather,
-          stopRaining: stopRaining + 1,
+          stopRaining: stopRaining == 0 ? stopRaining + 1 : stopRaining,
           textWeather:
             weatherCodes[parseInt(prediction.current_weather.weathercode)],
         });
@@ -182,7 +183,7 @@ async function processLocation(location) {
             location: 'Test',
             currentTemp: prediction.hourly.temperature_2m[index],
             currentWeather: currentWeather,
-            nextRain: nextRain + 1,
+            nextRain: nextRain == 0 ? nextRain + 1 : nextRain,
             textWeather:
               weatherCodes[parseInt(prediction.current_weather.weathercode)],
           });
@@ -202,7 +203,7 @@ async function processLocation(location) {
       console.log('Comprobando se está chovendo');
       let maxTimeToCheckRain = index + HOURSTOCHECK;
       for (let i = index; i < maxTimeToCheckRain; i++) {
-        if (prediction.hourly.precipitation[i] > 0.3) {
+        if (prediction.hourly.precipitation[i] > PERCENTAGETORAIN) {
           stopRaining++;
           console.log(
             `O índice ás ${i} horas é de ${prediction.hourly.precipitation[i]}`
@@ -230,7 +231,7 @@ async function processLocation(location) {
         console.log(
           `O índice ás ${i} horas é de ${prediction.hourly.precipitation[i]}`
         );
-        if (prediction.hourly.precipitation[i] > 0.3) {
+        if (prediction.hourly.precipitation[i] > PERCENTAGETORAIN) {
           console.log(
             `Seica si, en ${i} horas o indice de choiva da próxima hora é de ${prediction.hourly.precipitation[i]}`
           );
