@@ -10,8 +10,16 @@
 body {
   min-height: 100vh;
   /* background-image: url('loading.svg'); */
+  text-align: center;
   background-repeat: no-repeat;
   background-position: center;
+}
+
+svg {
+  width: 100px;
+  height: 100px;
+  margin: 20px;
+  display: inline-block;
 }
 
 header {
@@ -84,5 +92,5 @@ header img {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }

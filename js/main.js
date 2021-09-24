@@ -2,6 +2,7 @@ const permission = document.querySelector('.permission');
 const positive = document.querySelector('.positive');
 const negative = document.querySelector('.negative');
 const error = document.querySelector('.error');
+const loading = document.querySelector('.loading');
 const image = document.querySelector('#image');
 
 const HOURSTOCHECK = 12;
@@ -12,6 +13,7 @@ function hideAllPanels() {
   positive.classList.add('hidden');
   negative.classList.add('hidden');
   error.classList.add('hidden');
+  loading.classList.add('hidden');
 }
 
 function showPanel(panel) {
@@ -19,9 +21,11 @@ function showPanel(panel) {
 }
 
 async function getData(url) {
+  showPanel(loading);
   const response = await fetch(url);
   if (!response.ok) throw 'Error conseguindo info do tempo';
   const data = await response.json();
+  hideAllPanels();
   return data;
 }
 
