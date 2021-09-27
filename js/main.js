@@ -204,7 +204,6 @@ async function processLocation(location) {
       let maxTimeToCheckRain = index + HOURSTOCHECK;
       for (let i = index; i < maxTimeToCheckRain; i++) {
         if (prediction.hourly.precipitation[i] > PERCENTAGETORAIN) {
-          stopRaining++;
           console.log(
             `O índice ás ${i} horas é de ${prediction.hourly.precipitation[i]}`
           );
@@ -219,6 +218,7 @@ async function processLocation(location) {
         );
         return true;
       }
+      stopRaining++;
       console.log(`Seica non`);
       return false;
     }
@@ -227,7 +227,6 @@ async function processLocation(location) {
       console.log('Comprobando se vai chover');
       let maxTimeToCheckRain = index + HOURSTOCHECK;
       for (let i = index; i < maxTimeToCheckRain; i++) {
-        nextRain++;
         console.log(
           `O índice ás ${i} horas é de ${prediction.hourly.precipitation[i]}`
         );
@@ -237,6 +236,7 @@ async function processLocation(location) {
           );
           return true;
         }
+        nextRain++;
       }
       console.log(`Seica non`);
       return false;
