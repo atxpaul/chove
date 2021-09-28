@@ -118,22 +118,16 @@ function processCurrentWeather(weatherCode) {
     alt = 'icono treboada';
     weather = 'storm';
   }
-  let image = {
+  return {
     icon: icon,
     alt: alt,
     weather: weather,
   };
-  return image;
 }
 
 async function processLocation(location) {
   const latitude = location.coords.latitude;
   const longitude = location.coords.longitude;
-  if (location.coords.altitude == null) {
-    const altitude = 0;
-  } else {
-    const altitude = location.coords.altitude;
-  }
 
   try {
     let nextRain = 0;
@@ -289,7 +283,7 @@ const weatherCodes = {
   2: 'ceo parcialmente nubrado',
   3: 'ceo parcialmente nubrado',
   45: 'néboa',
-  48: 'néboa',
+  48: 'orballo',
   51: 'choiva feble',
   53: 'choiva feble',
   55: 'choiva feble',
