@@ -7,6 +7,11 @@ const image = document.querySelector('#image');
 const HOURSTOCHECK = 12;
 const PERCENTAGETORAIN = 0.35;
 
+let prediction = {};
+let nextRain = 0;
+let stopRaining = 0;
+let index;
+
 function hideAllPanels() {
   permission.classList.add('hidden');
   positive.classList.add('hidden');
@@ -125,14 +130,106 @@ function processCurrentWeather(weatherCode) {
   };
 }
 
+function getCurrentWeather() {
+  return prediction.current_weather.weathercode;
+}
+
+function processData() {
+  let currentWeather = processCurrentWeather(getCurrentWeather());
+  console.log(
+    `O tempo actual é ${
+      weatherCodes[parseInt(prediction.current_weather.weathercode)]
+    }`
+  );
+  if (
+    currentWeather.weather == 'rain' ||
+    currentWeather.weather == 'storm' ||
+    currentWeather.weather == 'snow'
+  ) {
+    isRaining();
+    showPositiveRaining({
+      location: 'Test',
+      currentTemp: prediction.hourly.temperature_2m[index],
+      currentWeather: currentWeather,
+      stopRaining: stopRaining == 0 ? stopRaining + 1 : stopRaining,
+      textWeather:
+        weatherCodes[parseInt(prediction.current_weather.weathercode)],
+    });
+  } else if (
+    currentWeather.weather == 'sun' ||
+    currentWeather.weather == 'sunandclouds' ||
+    currentWeather.weather == 'fog'
+  ) {
+    if (isGoingToRain() == true) {
+      showPositive({
+        location: 'Test',
+        currentTemp: prediction.hourly.temperature_2m[index],
+        currentWeather: currentWeather,
+        nextRain: nextRain == 0 ? nextRain + 1 : nextRain,
+        textWeather:
+          weatherCodes[parseInt(prediction.current_weather.weathercode)],
+      });
+    } else {
+      showNegative({
+        location: 'Test',
+        currentTemp: prediction.hourly.temperature_2m[index],
+        currentWeather: currentWeather,
+        textWeather:
+          weatherCodes[parseInt(prediction.current_weather.weathercode)],
+      });
+    }
+  }
+}
+
+function isRaining() {
+  console.log('Comprobando se está chovendo');
+  let maxTimeToCheckRain = index + HOURSTOCHECK;
+  for (let i = index; i < maxTimeToCheckRain; i++) {
+    if (prediction.hourly.precipitation[i] > PERCENTAGETORAIN) {
+      console.log(
+        `O índice ás ${i} horas é de ${prediction.hourly.precipitation[i]}`
+      );
+    }
+  }
+
+  if (stopRaining > 0) {
+    console.log(
+      `Seica si, agora o indice de choiva da próxima hora é de ${
+        prediction.hourly.precipitation[index + 1]
+      }`
+    );
+    return true;
+  }
+  stopRaining++;
+  console.log(`Seica non`);
+  return false;
+}
+
+function isGoingToRain() {
+  console.log('Comprobando se vai chover');
+  let maxTimeToCheckRain = index + HOURSTOCHECK;
+  for (let i = index; i < maxTimeToCheckRain; i++) {
+    console.log(
+      `O índice ás ${i} horas é de ${prediction.hourly.precipitation[i]}`
+    );
+    if (prediction.hourly.precipitation[i] > PERCENTAGETORAIN) {
+      console.log(
+        `Seica si, en ${i} horas o indice de choiva da próxima hora é de ${prediction.hourly.precipitation[i]}`
+      );
+      return true;
+    }
+    nextRain++;
+  }
+  console.log(`Seica non`);
+  return false;
+}
+
 async function processLocation(location) {
   const latitude = location.coords.latitude;
   const longitude = location.coords.longitude;
 
   try {
-    let nextRain = 0;
-    let stopRaining = 0;
-    const prediction = await getData(
+    prediction = await getData(
       `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation,weathercode&current_weather=true`
     );
 
@@ -140,101 +237,7 @@ async function processLocation(location) {
     const dformat = `${date.getFullYear()}-${(
       date.getMonth() + 1
     ).padLeft()}-${date.getDate().padLeft()}T${date.getHours().padLeft()}:00`;
-    const index = prediction.hourly.time.indexOf(dformat);
-
-    function getCurrentWeather() {
-      return prediction.current_weather.weathercode;
-    }
-
-    function processData() {
-      let currentWeather = processCurrentWeather(getCurrentWeather());
-      console.log(
-        `O tempo actual é ${
-          weatherCodes[parseInt(prediction.current_weather.weathercode)]
-        }`
-      );
-      if (
-        currentWeather.weather == 'rain' ||
-        currentWeather.weather == 'storm' ||
-        currentWeather.weather == 'snow'
-      ) {
-        isRaining();
-        showPositiveRaining({
-          location: 'Test',
-          currentTemp: prediction.hourly.temperature_2m[index],
-          currentWeather: currentWeather,
-          stopRaining: stopRaining == 0 ? stopRaining + 1 : stopRaining,
-          textWeather:
-            weatherCodes[parseInt(prediction.current_weather.weathercode)],
-        });
-      } else if (
-        currentWeather.weather == 'sun' ||
-        currentWeather.weather == 'sunandclouds' ||
-        currentWeather.weather == 'fog'
-      ) {
-        if (isGoingToRain() == true) {
-          showPositive({
-            location: 'Test',
-            currentTemp: prediction.hourly.temperature_2m[index],
-            currentWeather: currentWeather,
-            nextRain: nextRain == 0 ? nextRain + 1 : nextRain,
-            textWeather:
-              weatherCodes[parseInt(prediction.current_weather.weathercode)],
-          });
-        } else {
-          showNegative({
-            location: 'Test',
-            currentTemp: prediction.hourly.temperature_2m[index],
-            currentWeather: currentWeather,
-            textWeather:
-              weatherCodes[parseInt(prediction.current_weather.weathercode)],
-          });
-        }
-      }
-    }
-
-    function isRaining() {
-      console.log('Comprobando se está chovendo');
-      let maxTimeToCheckRain = index + HOURSTOCHECK;
-      for (let i = index; i < maxTimeToCheckRain; i++) {
-        if (prediction.hourly.precipitation[i] > PERCENTAGETORAIN) {
-          console.log(
-            `O índice ás ${i} horas é de ${prediction.hourly.precipitation[i]}`
-          );
-        }
-      }
-
-      if (stopRaining > 0) {
-        console.log(
-          `Seica si, agora o indice de choiva da próxima hora é de ${
-            prediction.hourly.precipitation[index + 1]
-          }`
-        );
-        return true;
-      }
-      stopRaining++;
-      console.log(`Seica non`);
-      return false;
-    }
-
-    function isGoingToRain() {
-      console.log('Comprobando se vai chover');
-      let maxTimeToCheckRain = index + HOURSTOCHECK;
-      for (let i = index; i < maxTimeToCheckRain; i++) {
-        console.log(
-          `O índice ás ${i} horas é de ${prediction.hourly.precipitation[i]}`
-        );
-        if (prediction.hourly.precipitation[i] > PERCENTAGETORAIN) {
-          console.log(
-            `Seica si, en ${i} horas o indice de choiva da próxima hora é de ${prediction.hourly.precipitation[i]}`
-          );
-          return true;
-        }
-        nextRain++;
-      }
-      console.log(`Seica non`);
-      return false;
-    }
+    index = prediction.hourly.time.indexOf(dformat);
 
     processData();
   } catch (error) {
