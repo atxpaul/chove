@@ -147,6 +147,9 @@ function processData() {
     currentWeather.weather == 'snow'
   ) {
     isRaining();
+    if (isGoingToRain() == true) {
+      console.log(`Está chovendo e volverá a chover en ${isGoingToRain} horas`);
+    }
     showPositiveRaining({
       location: 'Test',
       currentTemp: prediction.hourly.temperature_2m[index],
