@@ -190,7 +190,9 @@ function isRaining() {
   for (let i = index; i < maxTimeToCheckRain; i++) {
     if (prediction.hourly.precipitation[i] > PERCENTAGETORAIN) {
       console.log(
-        `O índice ás ${i} horas é de ${prediction.hourly.precipitation[i]}`
+        `O índice ás ${i < 24 ? i : i - 24} horas é de ${
+          prediction.hourly.precipitation[i]
+        }`
       );
     }
   }
@@ -213,7 +215,9 @@ function isGoingToRain() {
   let maxTimeToCheckRain = index + HOURSTOCHECK;
   for (let i = index; i < maxTimeToCheckRain; i++) {
     console.log(
-      `O índice ás ${i} horas é de ${prediction.hourly.precipitation[i]}`
+      `O índice ás ${i < 24 ? i : i - 24} horas é de ${
+        prediction.hourly.precipitation[i]
+      }`
     );
     if (prediction.hourly.precipitation[i] > PERCENTAGETORAIN) {
       console.log(
@@ -270,16 +274,40 @@ function getUserLocation() {
 
 function main() {
   showPanel(permission);
-  window.onblur = function () {
-    window.onfocus = function () {
-      location.reload(true);
+  if (detectBrowser() != 'Firefox') {
+    window.onblur = function () {
+      window.onfocus = function () {
+        location.reload(true);
+      };
     };
-  };
+  }
 
   if (localStorage.getItem('permission') === 'ok') {
     getUserLocation();
   } else {
     permission.querySelector('button').onclick = () => getUserLocation();
+  }
+}
+
+function detectBrowser() {
+  if (
+    (navigator.userAgent.indexOf('Opera') ||
+      navigator.userAgent.indexOf('OPR')) != -1
+  ) {
+    return 'Opera';
+  } else if (navigator.userAgent.indexOf('Chrome') != -1) {
+    return 'Chrome';
+  } else if (navigator.userAgent.indexOf('Safari') != -1) {
+    return 'Safari';
+  } else if (navigator.userAgent.indexOf('Firefox') != -1) {
+    return 'Firefox';
+  } else if (
+    navigator.userAgent.indexOf('MSIE') != -1 ||
+    !!document.documentMode == true
+  ) {
+    return 'IE'; //crap
+  } else {
+    return 'Unknown';
   }
 }
 
