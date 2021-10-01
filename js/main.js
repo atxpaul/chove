@@ -59,7 +59,12 @@ function showPositiveRaining(info) {
   }°C na túa localización con ${info.textWeather} 
   e parece que pode chover ata dentro de ${info.stopRaining} ${
     info.stopRaining === 1 ? 'hora' : 'horas'
-  } polo menos`;
+  } polo menos. 
+  ${
+    info.nextRain > 0
+      ? 'Pode voltar a chover en ' + info.nextRain + ' horas'
+      : ''
+  }`;
 }
 
 function showNegative(info) {
@@ -157,6 +162,7 @@ function processData() {
       stopRaining: stopRaining == 0 ? stopRaining + 1 : stopRaining,
       textWeather:
         weatherCodes[parseInt(prediction.current_weather.weathercode)],
+      nextRain: nextRain,
     });
   } else if (
     currentWeather.weather == 'sun' ||
@@ -221,12 +227,13 @@ function isGoingToRain() {
     );
     if (prediction.hourly.precipitation[i] > PERCENTAGETORAIN) {
       console.log(
-        `Seica si, en ${i} horas o indice de choiva da próxima hora é de ${prediction.hourly.precipitation[i]}`
+        `Seica si, en ${i} horas o indice de choiva é de ${prediction.hourly.precipitation[i]}`
       );
       return true;
     }
     nextRain++;
   }
+  nextRain = 0;
   console.log(`Seica non`);
   return false;
 }
