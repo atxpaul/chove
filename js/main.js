@@ -153,7 +153,7 @@ function processData() {
   ) {
     isRaining();
     if (isGoingToRain() == true) {
-      console.log(`Está chovendo e volverá a chover en ${isGoingToRain} horas`);
+      console.log(`Está chovendo e volverá a chover en ${nextRain} horas`);
     }
     showPositiveRaining({
       location: 'Test',
