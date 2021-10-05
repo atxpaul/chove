@@ -61,17 +61,29 @@ function showPositiveRaining(info) {
   showPanel(positive);
   image.src = info.currentWeather.icon;
   image.alt = info.currentWeather.alt;
-  positive.querySelector('p').innerHTML = `Agora mesmo hai ${
-    info.currentTemp
-  }°C na túa localización con ${info.textWeather} 
-  e parece que pode chover ata dentro de ${info.stopRaining} ${
-    info.stopRaining === 1 ? 'hora' : 'horas'
-  } polo menos. 
-  ${
-    info.nextRain > 0
-      ? '\nPode voltar a chover en ' + info.nextRain + ' horas'
-      : ''
-  }`;
+  if (stopRaining > 0) {
+    positive.querySelector('p').innerHTML = `Agora mesmo hai ${
+      info.currentTemp
+    }°C na túa localización con ${info.textWeather} 
+    e parece que pode chover ata dentro de ${info.stopRaining} ${
+      info.stopRaining === 1 ? 'hora' : 'horas'
+    } polo menos. 
+    ${
+      info.nextRain > 0
+        ? '\nPode voltar a chover en ' + info.nextRain + ' horas'
+        : ''
+    }`;
+  } else {
+    positive.querySelector('p').innerHTML = `Agora mesmo hai ${
+      info.currentTemp
+    }°C na túa localización con ${info.textWeather} 
+    e parece que vai parar de chover nuns intres
+    ${
+      info.nextRain > 0
+        ? '\nPode voltar a chover en ' + info.nextRain + ' horas'
+        : ''
+    }`;
+  }
 }
 
 function showNegative(info) {
@@ -166,7 +178,7 @@ function processData() {
       location: 'Test',
       currentTemp: prediction.hourly.temperature_2m[index],
       currentWeather: currentWeather,
-      stopRaining: stopRaining == 0 ? stopRaining + 1 : stopRaining,
+      stopRaining: stopRaining, // == 0 ? stopRaining + 1 : stopRaining,
       textWeather:
         weatherCodes[parseInt(prediction.current_weather.weathercode)],
       nextRain: nextRain,
