@@ -41,12 +41,19 @@ function showPositive(info) {
   showPanel(positive);
   image.src = info.currentWeather.icon;
   image.alt = info.currentWeather.alt;
-  positive.querySelector('p').innerHTML = `Agora mesmo hai ${
-    info.currentTemp
-  }°C na túa localización con ${info.textWeather} 
-  e parece que pode chover dentro de ${info.nextRain} ${
-    info.nextRain === 1 ? 'hora' : 'horas'
-  }`;
+  if (nextRain > 0) {
+    positive.querySelector('p').innerHTML = `Agora mesmo hai ${
+      info.currentTemp
+    }°C na túa localización con ${info.textWeather} 
+    e parece que pode chover dentro de ${info.nextRain} ${
+      info.nextRain === 1 ? 'hora' : 'horas'
+    }`;
+  } else {
+    positive.querySelector(
+      'p'
+    ).innerHTML = `Agora mesmo hai ${info.currentTemp}°C na túa localización con ${info.textWeather} 
+    e parece que pode chover axiña`;
+  }
 }
 
 function showPositiveRaining(info) {
@@ -62,7 +69,7 @@ function showPositiveRaining(info) {
   } polo menos. 
   ${
     info.nextRain > 0
-      ? 'Pode voltar a chover en ' + info.nextRain + ' horas'
+      ? '\nPode voltar a chover en ' + info.nextRain + ' horas'
       : ''
   }`;
 }
@@ -153,7 +160,7 @@ function processData() {
   ) {
     isRaining();
     console.log(stopRaining);
-    if (isGoingToRain() == true) {
+    if (isGoingToRain() == true && stopRaining < 4) {
       console.log(`Está chovendo e volverá a chover en ${nextRain} horas`);
     }
     showPositiveRaining({
@@ -175,7 +182,7 @@ function processData() {
         location: 'Test',
         currentTemp: prediction.hourly.temperature_2m[index],
         currentWeather: currentWeather,
-        nextRain: nextRain == 0 ? nextRain + 1 : nextRain,
+        nextRain: nextRain, //== 0 ? nextRain + 1 : nextRain,
         textWeather:
           weatherCodes[parseInt(prediction.current_weather.weathercode)],
       });
@@ -229,7 +236,9 @@ function isGoingToRain() {
     );
     if (prediction.hourly.precipitation[i] > PERCENTAGETORAIN) {
       console.log(
-        `Seica si, en ${i} horas o indice de choiva é de ${prediction.hourly.precipitation[i]}`
+        `Seica si, ás ${i < 24 ? i : i - 24} horas o indice de choiva é de ${
+          prediction.hourly.precipitation[i]
+        }`
       );
       return true;
     }
@@ -352,3 +361,5 @@ const weatherCodes = {
 };
 
 main();
+
+module.exports = { weatherCodes, processData, isGoingToRain, isRaining };
