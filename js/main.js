@@ -159,7 +159,6 @@ function processData() {
     currentWeather.weather == 'snow'
   ) {
     isRaining();
-    console.log(stopRaining);
     if (isGoingToRain() == true && stopRaining < 4) {
       console.log(`Está chovendo e volverá a chover en ${nextRain} horas`);
     }
@@ -208,8 +207,8 @@ function isRaining() {
           prediction.hourly.precipitation[i]
         }`
       );
+      stopRaining++;
     }
-    stopRaining++;
   }
 
   if (stopRaining > 0) {
@@ -222,6 +221,7 @@ function isRaining() {
   }
 
   console.log(`Seica non`);
+  stopRaining = 0;
   return false;
 }
 
