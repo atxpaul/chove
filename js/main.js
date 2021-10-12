@@ -42,16 +42,16 @@ function showPositive(info) {
   image.src = info.currentWeather.icon;
   image.alt = info.currentWeather.alt;
   if (nextRain > 0) {
-    positive.querySelector('p').innerHTML = `Agora mesmo hai ${
-      info.currentTemp
-    }°C na túa localización con ${info.textWeather} 
+    positive.querySelector('p').innerHTML = `🌡️  ${info.currentTemp}°C \n${
+      info.textWeather
+    } 
     e parece que pode chover dentro de ${info.nextRain} ${
       info.nextRain === 1 ? 'hora' : 'horas'
     }`;
   } else {
     positive.querySelector(
       'p'
-    ).innerHTML = `Agora mesmo hai ${info.currentTemp}°C na túa localización con ${info.textWeather} 
+    ).innerHTML = `🌡️  ${info.currentTemp}°C \n${info.textWeather} 
     e parece que pode chover axiña`;
   }
 }
@@ -62,9 +62,9 @@ function showPositiveRaining(info) {
   image.src = info.currentWeather.icon;
   image.alt = info.currentWeather.alt;
   if (stopRaining > 0) {
-    positive.querySelector('p').innerHTML = `Agora mesmo hai ${
-      info.currentTemp
-    }°C na túa localización con ${info.textWeather} 
+    positive.querySelector('p').innerHTML = `🌡️  ${info.currentTemp}°C \n${
+      info.textWeather
+    } 
     e parece que pode chover ata dentro de ${info.stopRaining} ${
       info.stopRaining === 1 ? 'hora' : 'horas'
     } polo menos. 
@@ -74,9 +74,9 @@ function showPositiveRaining(info) {
         : ''
     }`;
   } else {
-    positive.querySelector('p').innerHTML = `Agora mesmo hai ${
-      info.currentTemp
-    }°C na túa localización con ${info.textWeather} 
+    positive.querySelector('p').innerHTML = `🌡️  ${info.currentTemp}°C \n${
+      info.textWeather
+    } 
     e parece que vai parar de chover nuns intres
     ${
       info.nextRain > 0
@@ -91,9 +91,9 @@ function showNegative(info) {
   showPanel(negative);
   image.src = info.currentWeather.icon;
   image.alt = info.currentWeather.alt;
-  negative.querySelector(
-    'p'
-  ).innerHTML = `Agora mesmo hai ${info.currentTemp}°C na túa localización con ${info.textWeather}  e non parece que vaia a chover nas próximas horas`;
+  negative.querySelector('p').innerHTML = `🌡️  ${info.currentTemp}°C 
+  <br>${info.textWeather}  
+  <br>Sen choiva prevista`;
 }
 
 function processCurrentWeather(weatherCode) {
@@ -342,34 +342,34 @@ function detectBrowser() {
 }
 
 const weatherCodes = {
-  0: 'ceo despexado',
-  1: 'ceo parcialmente nubrado',
-  2: 'ceo parcialmente nubrado',
-  3: 'ceo parcialmente nubrado',
-  45: 'néboa',
-  48: 'orballo',
-  51: 'choiva feble',
-  53: 'choiva feble',
-  55: 'choiva feble',
-  56: 'choiva con neve',
-  57: 'choiva con neve',
-  61: 'choiva',
-  63: 'choiva',
-  65: 'choiva',
-  66: 'choiva con neve',
-  67: 'choiva con neve',
-  71: 'neve',
-  75: 'neve',
-  73: 'neve',
+  0: 'Ceo despexado',
+  1: 'Ceo parcialmente nubrado',
+  2: 'Ceo parcialmente nubrado',
+  3: 'Ceo parcialmente nubrado',
+  45: 'Néboa',
+  48: 'Orballo',
+  51: 'Choiva feble',
+  53: 'Choiva feble',
+  55: 'Choiva feble',
+  56: 'Choiva con neve',
+  57: 'Choiva con neve',
+  61: 'Choiva',
+  63: 'Choiva',
+  65: 'Choiva',
+  66: 'Choiva con neve',
+  67: 'Choiva con neve',
+  71: 'Neve',
+  75: 'Neve',
+  73: 'Neve',
   77: 'saraiba',
-  80: 'choiva intermitente',
-  81: 'choiva intermitente',
-  82: 'choiva intermitente',
-  85: 'choiva intensa intermitente',
-  86: 'choiva intensa intermitente',
-  95: 'treboada',
-  96: 'treboada',
-  99: 'treboada',
+  80: 'Choiva intermitente',
+  81: 'Choiva intermitente',
+  82: 'Choiva intermitente',
+  85: 'Choiva intensa intermitente',
+  86: 'Choiva intensa intermitente',
+  95: 'Treboada',
+  96: 'Treboada',
+  99: 'Treboada',
 };
 
 main();
