@@ -11,6 +11,7 @@ let prediction = {};
 let nextRain = 0;
 let stopRaining = 0;
 let index;
+let userHour;
 
 function hideAllPanels() {
   permission.classList.add('hidden');
@@ -246,6 +247,7 @@ function isGoingToRain() {
         prediction.hourly.precipitation[i]
       }`
     );
+    console.log(`${prediction.hourly.time[i]}`);
     if (prediction.hourly.precipitation[i] > PERCENTAGETORAIN) {
       console.log(
         `Seica si, ás ${i < 24 ? i : i - 24} horas o indice de choiva é de ${
@@ -270,11 +272,14 @@ async function processLocation(location) {
       `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation,weathercode&current_weather=true`
     );
 
-    const date = new Date();
-    const dformat = `${date.getFullYear()}-${(
-      date.getMonth() + 1
-    ).padLeft()}-${date.getDate().padLeft()}T${date.getHours().padLeft()}:00`;
-    index = prediction.hourly.time.indexOf(dformat);
+    // const date = new Date();
+    // const dformat = `${date.getFullYear()}-${(
+    //   date.getMonth() + 1
+    // ).padLeft()}-${date.getDate().padLeft()}T${date.getHours().padLeft()}:00`;
+    // index = prediction.hourly.time.indexOf(dformat);
+    const currentDate = prediction.current_weather.time;
+    index = prediction.hourly.time.indexOf(currentDate);
+    userHour = getUserTime();
 
     processData();
   } catch (error) {
@@ -300,6 +305,12 @@ function getUserLocation() {
       showError('Erro conseguindo localización');
     }
   );
+}
+
+function getUserTime() {
+  const date = new Date();
+  let hour = date.getHours().padLeft();
+  return hour;
 }
 
 function main() {
