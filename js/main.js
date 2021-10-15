@@ -241,13 +241,14 @@ function isRaining() {
 function isGoingToRain() {
   console.log('Comprobando se vai chover');
   let maxTimeToCheckRain = index + HOURSTOCHECK;
+  console.log(`${prediction.hourly.time[index]}`);
   for (let i = index; i < maxTimeToCheckRain; i++) {
     console.log(
       `O índice ás ${i < 24 ? i : i - 24} horas é de ${
         prediction.hourly.precipitation[i]
       }`
     );
-    console.log(`${prediction.hourly.time[i]}`);
+
     if (prediction.hourly.precipitation[i] > PERCENTAGETORAIN) {
       console.log(
         `Seica si, ás ${i < 24 ? i : i - 24} horas o indice de choiva é de ${
@@ -272,11 +273,6 @@ async function processLocation(location) {
       `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m,precipitation,weathercode&current_weather=true`
     );
 
-    // const date = new Date();
-    // const dformat = `${date.getFullYear()}-${(
-    //   date.getMonth() + 1
-    // ).padLeft()}-${date.getDate().padLeft()}T${date.getHours().padLeft()}:00`;
-    // index = prediction.hourly.time.indexOf(dformat);
     const currentDate = prediction.current_weather.time;
     index = prediction.hourly.time.indexOf(currentDate);
     userHour = getUserTime();
