@@ -214,8 +214,9 @@ function processData() {
 function isRaining() {
   console.log('Comprobando se está chovendo');
   let maxTimeToCheckRain = index + HOURSTOCHECK;
-  let hourWithVariation = i + variationTime;
+  let hourWithVariation;
   for (let i = index; i < maxTimeToCheckRain; i++) {
+    hourWithVariation = i + variationTime;
     if (prediction.hourly.precipitation[i] > PERCENTAGETORAIN) {
       console.log(
         `O índice ás ${
@@ -243,8 +244,9 @@ function isRaining() {
 function isGoingToRain() {
   console.log('Comprobando se vai chover');
   let maxTimeToCheckRain = index + HOURSTOCHECK;
+  let hourWithVariation;
   for (let i = index; i < maxTimeToCheckRain; i++) {
-    let hourWithVariation = i + variationTime;
+    hourWithVariation = i + variationTime;
     console.log(
       `O índice ás ${
         hourWithVariation < 24 ? hourWithVariation : hourWithVariation - 24
