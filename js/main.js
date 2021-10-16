@@ -12,6 +12,7 @@ let nextRain = 0;
 let stopRaining = 0;
 let index;
 let userHour;
+let variationTime;
 
 function hideAllPanels() {
   permission.classList.add('hidden');
@@ -213,12 +214,13 @@ function processData() {
 function isRaining() {
   console.log('Comprobando se está chovendo');
   let maxTimeToCheckRain = index + HOURSTOCHECK;
+  let hourWithVariation = i + variationTime;
   for (let i = index; i < maxTimeToCheckRain; i++) {
     if (prediction.hourly.precipitation[i] > PERCENTAGETORAIN) {
       console.log(
-        `O índice ás ${i < 24 ? i : i - 24} horas é de ${
-          prediction.hourly.precipitation[i]
-        }`
+        `O índice ás ${
+          hourWithVariation < 24 ? hourWithVariation : hourWithVariation - 24
+        } horas é de ${prediction.hourly.precipitation[i]}`
       );
       stopRaining++;
     }
@@ -241,19 +243,19 @@ function isRaining() {
 function isGoingToRain() {
   console.log('Comprobando se vai chover');
   let maxTimeToCheckRain = index + HOURSTOCHECK;
-  console.log(`${prediction.hourly.time[index]}`);
   for (let i = index; i < maxTimeToCheckRain; i++) {
+    let hourWithVariation = i + variationTime;
     console.log(
-      `O índice ás ${i < 24 ? i : i - 24} horas é de ${
-        prediction.hourly.precipitation[i]
-      }`
+      `O índice ás ${
+        hourWithVariation < 24 ? hourWithVariation : hourWithVariation - 24
+      } horas é de ${prediction.hourly.precipitation[i]}`
     );
 
     if (prediction.hourly.precipitation[i] > PERCENTAGETORAIN) {
       console.log(
-        `Seica si, ás ${i < 24 ? i : i - 24} horas o indice de choiva é de ${
-          prediction.hourly.precipitation[i]
-        }`
+        `Seica si, ás ${
+          hourWithVariation < 24 ? hourWithVariation : hourWithVariation - 24
+        } horas o indice de choiva é de ${prediction.hourly.precipitation[i]}`
       );
       return true;
     }
@@ -275,7 +277,15 @@ async function processLocation(location) {
 
     const currentDate = prediction.current_weather.time;
     index = prediction.hourly.time.indexOf(currentDate);
+
     userHour = getUserTime();
+    console.log(
+      `A hora actual UTC é ${prediction.hourly.time[index]}, a hora do usuario son as ${userHour}`
+    );
+    variationTime = getVariationUTCToUserTime(
+      prediction.hourly.time[index].substr(11, 2),
+      userHour
+    );
 
     processData();
   } catch (error) {
@@ -307,6 +317,10 @@ function getUserTime() {
   const date = new Date();
   let hour = date.getHours().padLeft();
   return hour;
+}
+
+function getVariationUTCToUserTime(hourUTC, hourUser) {
+  return hourUser - hourUTC;
 }
 
 function main() {
