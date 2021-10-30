@@ -5,7 +5,7 @@ const error = document.querySelector('.error');
 const image = document.querySelector('#image');
 
 const HOURSTOCHECK = 12;
-const PERCENTAGETORAIN = 0.2;
+const PERCENTAGETORAIN = 0.12;
 
 let prediction = {};
 let nextRain = 0;
