@@ -321,8 +321,16 @@ function getUserTime() {
   return hour;
 }
 
+//TODO Fix variation
 function getVariationUTCToUserTime(hourUTC, hourUser) {
-  return hourUser - hourUTC;
+  let variation;
+  if (hourUser < hourUTC) {
+    variation = 24 + parseInt(hourUser) - parseInt(hourUTC);
+  } else {
+    variation = hourUser - hourUTC;
+  }
+  console.log(`A variación de tempo sobre UTC é ${variation}`);
+  return variation;
 }
 
 function main() {
